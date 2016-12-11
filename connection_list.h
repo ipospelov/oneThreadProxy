@@ -1,3 +1,5 @@
+#include "cache_list.h"
+
 #define DATA_SIZE 4096
 typedef struct connection_list{
     int client_socket, remote_socket;
@@ -7,6 +9,7 @@ typedef struct connection_list{
     connection_list *next, *prev;
     char request_buf[DATA_SIZE];
     int request_buf_size;
+    cache_list *server_answer;
 };
 
 connection_list *head, *tail;
@@ -21,14 +24,6 @@ void add(int new_connection_fd){
     connection_list *q = (connection_list*)malloc(sizeof(connection_list));
     q->client_socket = new_connection_fd;
     q->remote_socket = -1;
-    //socket(AF_INET, SOCK_STREAM, 0);
-    //set_fd_max(q->remote_socket);
-    //int res = connect(q->remote_socket, servinfo->ai_addr, sizeof(*servinfo->ai_addr));
-    /*if(res != 0){
-        perror("connecting to server error:");
-        close(q->remote_socket);
-        exit(3);
-    }*/
     q->prev = NULL;
     if(head != NULL) {
         q->next = head;
@@ -46,7 +41,20 @@ void add(int new_connection_fd){
     head = q;
 }
 
+int list_size(){
+    connection_list *q = head;
+    int rez = 0;
+    while(q != NULL){
+        rez++;
+        q=q->next;
+    }
+    return rez;
+}
+
 void remove(connection_list *q){
+    //int k =0;
+    //printf("size of list: %d \n",list_size());
+    //printf("removing %d\n",q);
     if(q == head && q == tail) {
         head = NULL;
         tail = NULL;
