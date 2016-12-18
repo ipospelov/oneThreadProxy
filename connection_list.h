@@ -10,6 +10,8 @@ struct connection_list{
     char request_buf[DATA_SIZE];
     int request_buf_size;
     cache_list *server_answer;
+    char *current_uri;       //для хранения uri передаваемой из кэша записи
+    int sended_from_cache;   //сколько из кэша уже передали
 };
 
 connection_list *head, *tail;
@@ -40,6 +42,8 @@ void add(int new_connection_fd){
     q->request_buf_size = 0;
     q->server_answer = NULL;
     head = q;
+    q->current_uri = NULL;
+    q->sended_from_cache = 0;
 }
 
 int list_size(){
@@ -56,7 +60,7 @@ void remove(connection_list *q){
     //printf("start removing\n");
     //int k =0;
     //printf("size of list: %d \n",list_size());
-    //printf("removing %d\n",q);
+    //printf("removing %d\n",q->client_socket);
     if(q == head && q == tail) {
         head = NULL;
         tail = NULL;

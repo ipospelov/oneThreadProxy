@@ -29,7 +29,7 @@ void set_descriptors(fd_set *readfs, fd_set *writefs, int listenfd){
                 FD_SET(q->remote_socket, readfs);
             if(q->data_toremote>0  && q->remote_socket != -1)
                 FD_SET(q->remote_socket, writefs);
-            if(q->data_toclient>0)
+            if(q->data_toclient>0 || q->current_uri != NULL)
                 FD_SET(q->client_socket, writefs);
         }
         q = t;
