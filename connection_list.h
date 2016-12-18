@@ -1,7 +1,7 @@
 #include "cache_list.h"
 
 #define DATA_SIZE 4096
-typedef struct connection_list{
+struct connection_list{
     int client_socket, remote_socket;
     int data_toremote, data_toclient;
     char buf_toremote[DATA_SIZE];
@@ -38,6 +38,7 @@ void add(int new_connection_fd){
     memset(q->buf_toclient, 0, sizeof(q->buf_toclient));
     memset(q->request_buf, 0, sizeof(q->request_buf));
     q->request_buf_size = 0;
+    q->server_answer = NULL;
     head = q;
 }
 
@@ -52,6 +53,7 @@ int list_size(){
 }
 
 void remove(connection_list *q){
+    //printf("start removing\n");
     //int k =0;
     //printf("size of list: %d \n",list_size());
     //printf("removing %d\n",q);
@@ -71,4 +73,5 @@ void remove(connection_list *q){
     close(q->client_socket);
     close(q->remote_socket);
     free(q);
+    //printf("end removing\n");
 }
